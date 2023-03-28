@@ -1,0 +1,27 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: {{ include "nmstate.fullname" . }}-{{ .Values.bond.name }}
+  labels:
+    {{- include "nmstate.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  desiredState:
+    interfaces:
+    - name: {{ .Values.bond.name }}
+      description: Bond name {{ .Values.bond.name }} created, with ports {{ .Values.bond.aggregation.ports | toStrings }}
+      type: bond
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      link-aggregation:
+        mode: {{ .Values.bond.aggregation.mode }}
+        options:
+          miimon: {{ .Values.bond.aggregation.miimon }}
+        port:
+          {{- toYaml .Values.bond.aggregation.ports | nindent 10 }}
+      mtu: {{ .Values.bond.mtu }}

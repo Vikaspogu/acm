@@ -1,0 +1,25 @@
+{{- $bondName :=.Values.bond.name -}}
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: {{ include "nmstate.fullname" . }}-{{ $bondName }}-vlan-tagging
+  labels:
+    {{- include "nmstate.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  desiredState:
+    interfaces:
+    {{- range .Values.interfaces }}
+    - name: {{ $bondName }}.{{ .id }}
+      description: Traffic management using {{ $bondName }}.{{ .id }}
+      type: {{ .vlan.type }}
+      state: {{ .vlan.state }}
+      ipv4:
+        enabled: false
+      vlan:
+        base-iface: {{ $bondName }}
+        id: {{ .id }}
+    {{- end }} 

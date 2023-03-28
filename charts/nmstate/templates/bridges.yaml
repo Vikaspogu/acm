@@ -1,0 +1,30 @@
+{{- $bondName :=.Values.bond.name -}}
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: {{ include "nmstate.fullname" . }}-bridges
+  labels:
+    {{- include "nmstate.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  desiredState:
+    interfaces:
+    {{- range .Values.interfaces }}
+      - name: br{{ .id }}
+        description: Linux bridge between {{ $bondName }}.{{ .id }} and br{{ .id }}
+        type: {{ .bridge.type }}
+        state: {{ .bridge.state }}
+        ipv4:
+          address:
+          {{- toYaml .bridge.ipAddresses | nindent 12 }}
+          enabled: true
+        bridge:
+          options:
+            stp:
+              enabled: false
+          port:
+            - name: {{ $bondName }}.{{ .id }}
+      {{- end }}
