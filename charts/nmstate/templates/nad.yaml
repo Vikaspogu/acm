@@ -1,11 +1,11 @@
 {{- $bondName := .Values.bond.name -}}
 {{- $releaseName := include "nmstate.fullname" . -}}
 {{- $releaseLabels := include "nmstate.labels" . -}}
-{{- $interfaces := .Values.interfaces -}}
+{{- $values := .Values -}}
 {{- range $index, $node := (lookup "v1" "Node" "" "").items  }}
-{{- if hasKey $node.metadata.labels "node-role.kubernetes.io/master" }}
+{{- if hasKey $node.metadata.labels ( keys $values.nodeSelector | first ) }}
 {{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" -}}
-{{- range $interfaces }}
+{{- range $values.interfaces }}
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
