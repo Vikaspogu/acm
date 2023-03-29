@@ -1,0 +1,15 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/falcon-operator.falcon-operator: ''
+  name: falcon-operator
+  namespace: falcon-operator
+spec:
+  channel: alpha
+  installPlanApproval: Automatic
+  name: falcon-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+

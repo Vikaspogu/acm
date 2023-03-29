@@ -1,0 +1,14 @@
+apiVersion: falcon.crowdstrike.com/v1alpha1
+kind: FalconContainer
+metadata:
+  name: default
+spec:
+  falcon_api:
+    client_id: <REPLACE>
+    client_secret: <REPLACE>
+    cloud_region: autodiscover
+  installer_args:
+    - '-falconctl-opts'
+    - '--tags=test-cluster'
+  registry:
+    type: crowdstrike
