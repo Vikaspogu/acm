@@ -68,4 +68,4 @@ interfaces:
           prefix-length: 24
 
 nodeSelector: 
-  node-role.kubernetes.io/worker: true
+  node-role.kubernetes.io/worker: "true"
