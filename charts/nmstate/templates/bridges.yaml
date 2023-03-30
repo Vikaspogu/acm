@@ -1,23 +1,24 @@
 {{- $values := .Values -}}
 {{- $bondName := .Values.bond.name -}}
+{{- $releaseLabels := include "nmstate.labels" . -}}
 {{- range $index, $node := (lookup "v1" "Node" "" "").items  }}
 {{- if hasKey $node.metadata.labels ( keys $values.nodeSelector | first ) }}
-{{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" -}}
+{{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" }}
 ---
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
   name: {{ $nodeName }}-{{ $bondName }}-bridges
   labels:
-    {{- include "nmstate.labels" . | nindent 4 }}
+    {{- $releaseLabels | nindent 4 }}
 spec:
-  {{- with .Values.nodeSelector }}
+  {{- with $values.nodeSelector }}
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   desiredState:
     interfaces:
-    {{- range .Values.interfaces }}
+    {{- range $values.interfaces }}
       - name: br{{ .id }}
         description: Linux bridge between {{ $bondName }}.{{ .id }} and br{{ .id }}
         type: {{ .bridge.type }}
