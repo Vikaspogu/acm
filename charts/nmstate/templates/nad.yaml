@@ -1,16 +1,10 @@
-{{- $bondName := .Values.bond.name -}}
-{{- $releaseName := include "nmstate.fullname" . -}}
 {{- $releaseLabels := include "nmstate.labels" . -}}
-{{- $values := .Values -}}
-{{- range $index, $node := (lookup "v1" "Node" "" "").items  }}
-{{- if hasKey $node.metadata.labels ( keys $values.nodeSelector | first ) }}
-{{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" -}}
-{{- range $values.interfaces }}
+{{- range .Values.interfaces }}
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: nad-{{ $nodeName }}-{{ .id}}
+  name: nad-{{ .id}}
   labels:
     {{- $releaseLabels | nindent 4 }}
 spec:
@@ -22,6 +16,4 @@ spec:
     "macspoofchk": true,
     "mtu": {{ .mtu }}
 }'
-{{- end }}
-{{- end }}
 {{- end }}

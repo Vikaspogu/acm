@@ -1,8 +1,13 @@
-{{- $bondName :=.Values.bond.name -}}
+{{- $values := .Values -}}
+{{- $bondName := .Values.bond.name -}}
+{{- range $index, $node := (lookup "v1" "Node" "" "").items  }}
+{{- if hasKey $node.metadata.labels ( keys $values.nodeSelector | first ) }}
+{{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" -}}
+---
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
-  name: {{ include "nmstate.fullname" . }}-bridges
+  name: {{ $nodeName }}-{{ $bondName }}-bridges
   labels:
     {{- include "nmstate.labels" . | nindent 4 }}
 spec:
@@ -27,4 +32,6 @@ spec:
               enabled: false
           port:
             - name: {{ $bondName }}.{{ .id }}
-      {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
