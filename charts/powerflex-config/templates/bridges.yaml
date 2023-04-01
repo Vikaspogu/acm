@@ -1,18 +1,16 @@
 {{- $values := .Values -}}
 {{- $bondName := .Values.bond.name -}}
-{{- $releaseLabels := include "nmstate.labels" . -}}
-{{- range $index, $node := (lookup "v1" "Node" "" "").items  }}
-{{- if hasKey $node.metadata.labels ( keys $values.nodeSelector | first ) }}
-{{- $nodeName := $node.metadata.name | trunc 30 | replace "." "-" }}
+{{- $releaseLabels := include "powerflex-config.labels" . -}}
+{{- range $index, $node := $values.nodesBridge  }}
 ---
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
-  name: {{ $nodeName }}-{{ $bondName }}-bridges
+  name: {{ $index  }}-{{ $bondName }}-bridges
   labels:
     {{- $releaseLabels | nindent 4 }}
 spec:
-  {{- with $values.nodeSelector }}
+  {{- with $node.nodeSelector }}
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -21,11 +19,12 @@ spec:
     {{- range $values.interfaces }}
       - name: br{{ .id }}
         description: Linux bridge between {{ $bondName }}.{{ .id }} and br{{ .id }}
-        type: {{ .bridge.type }}
-        state: {{ .bridge.state }}
+        type: {{ $node.type }}
+        state: {{ $node.state }}
+        {{- $ipAddress := get  $node.interfaceIDs  (.id | toString) }}
         ipv4:
           address:
-          {{- toYaml .bridge.ipAddresses | nindent 12 }}
+          {{- toYaml $ipAddress | nindent 12 }}
           enabled: true
         bridge:
           options:
@@ -34,5 +33,4 @@ spec:
           port:
             - name: {{ $bondName }}.{{ .id }}
     {{- end }}
-{{- end }}
 {{- end }}

@@ -2,9 +2,9 @@
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
-  name: {{ include "nmstate.fullname" . }}-{{ $bondName }}-vlan-tagging
+  name: {{ include "powerflex-config.fullname" . }}-{{ $bondName }}-vlan-tagging
   labels:
-    {{- include "nmstate.labels" . | nindent 4 }}
+    {{- include "powerflex-config.labels" . | nindent 4 }}
 spec:
   {{- with .Values.nodeSelector }}
   nodeSelector:

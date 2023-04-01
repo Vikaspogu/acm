@@ -1,0 +1,67 @@
+{{- $values := .Values -}}
+{{- $releaseName := include "powerflex-config.fullname" . -}}
+{{- $releaseLabels := include "powerflex-config.labels" . -}}
+{{- range $key, $vm := $values.vms }}
+{{- range $nodeKey, $node := $vm.nodes }}
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    {{- $releaseLabels | nindent 4 }}
+    kubevirt.io/vm: {{ $key }}-{{ $nodeKey }}-vm
+  name: {{ $key }}-{{ $nodeKey }}-vm
+spec:
+  dataVolumeTemplates:
+  - metadata:
+      name: {{ $key }}-dv
+    spec:
+      pvc:
+        accessModes:
+          - ReadWriteOnce
+        {{- with $vm.pvc.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        storageClassName: {{ $vm.pvc.storageClassName }}
+      {{- with $vm.source }}
+        source:
+          http:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+  running: true
+  template:
+    metadata:
+      labels:
+        {{- $releaseLabels | nindent 8 }}
+        kubevirt.io/vm: {{ $key }}-{{ $nodeKey }}-vm
+    spec:
+      {{- with $node.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      domain:
+        devices:
+          disks:
+          - disk:
+              bus: {{ $vm.domain.diskBus }}
+            name: {{ $vm.domain.volumeName }}
+        ## TODO: Update network with template values
+        networks:
+          - name: default
+            pod: {}
+          - name: br250
+            multus: 
+              networkName: nad-node01-250
+        machine:
+          {{- with $vm.pvc.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+      - dataVolume:
+          name: {{ $key }}-dv
+        name: {{ $vm.domain.volumeName }}
+status: {}
+{{- end }}
+{{- end }}
