@@ -4,7 +4,7 @@ kind: Kustomization
 
 helmCharts:
   - name: control-cluster
-    releaseName: nmstate
+    releaseName: powerflex-config
     repo: https://github.com/Vikaspogu/acm/charts/
     version: "0.1.0"
     valuesFile: values.yaml

@@ -1,0 +1,173 @@
+
+bond:
+  name: bond1
+  mtu: 9000
+  aggregation:
+    mode: 802.3ad
+    miimon: '100'
+    ports:
+      - eno3
+      - eno4
+
+interfaces:
+  - id: 250
+    mtu: 1500
+    vlan:
+      type: vlan
+      state: up
+  - id: 251
+    mtu: 9000
+    vlan:
+      type: vlan
+      state: up
+  - id: 252
+    mtu: 9000
+    vlan:
+      type: vlan
+      state: up
+  - id: 139
+    mtu: 1500
+    vlan:
+      type: vlan
+      state: up
+  - id: 204
+    mtu: 1500
+    vlan:
+      type: vlan
+      state: up
+      
+nodesBridge:
+  ocp-node01:
+    nodeSelector: 
+      kubernetes.io/hostname: "ocp-node01"
+    type: linux-bridge
+    state: up
+    interfaceIDs:
+      250:
+        - ip: 10.216.250.206
+          prefix-length: 24
+      251:
+        - ip: 10.216.251.208
+          prefix-length: 24
+      252:
+        - ip: 10.216.252.206
+          prefix-length: 24
+      139:
+        - ip: 192.168.139.206
+          prefix-length: 24
+      204: 
+        - ip: 10.216.204.206
+          prefix-length: 24
+  ocp-node02:
+    nodeSelector: 
+      kubernetes.io/hostname: "ocp-node02"
+    type: linux-bridge
+    state: up
+    interfaceIDs:
+      250:
+        - ip: 10.216.250.207
+          prefix-length: 24
+      251:
+        - ip: 10.216.251.182
+          prefix-length: 24
+      252:
+        - ip: 10.216.252.182
+          prefix-length: 24
+      139:
+        - ip: 192.168.139.241
+          prefix-length: 24
+      204: 
+        - ip: 10.216.204.16
+          prefix-length: 24
+  ocp-node03:
+    nodeSelector: 
+      kubernetes.io/hostname: "ocp-node03"
+    type: linux-bridge
+    state: up
+    interfaceIDs:
+      250:
+        - ip: 10.216.250.208
+          prefix-length: 24
+      251:
+        - ip: 10.216.251.183
+          prefix-length: 24
+      252:
+        - ip: 10.216.252.183
+          prefix-length: 24
+      139:
+        - ip: 192.168.139.242
+          prefix-length: 24
+      204: 
+        - ip: 10.216.204.17
+          prefix-length: 24
+
+nodeSelector: 
+  node-role.kubernetes.io/worker: "true"
+
+vms:
+  clc:
+    nodes:
+      ocp-node02:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node02"
+      ocp-node03:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node03"
+    pvc:
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: hostpath-provisioner
+    source:
+      url: "http://10.216.250.210:8008/clc-7.1-3.6.1.3.qcow2"
+      secretRef: ""
+      certConfigMap: ""
+    domain:
+      diskBus: virtio
+      volumeName: datavolumedisk100
+      resources:
+        requests:
+          memory: 32Gi
+  gw:
+    nodes:
+      ocp-node02:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node02"
+      ocp-node03:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node03"
+    pvc:
+      resources:
+        requests:
+          storage: 160Gi
+      storageClassName: hostpath-provisioner
+    source:
+      url: "http://10.216.250.210:8008/PxPS-3604.qcow2"
+      secretRef: ""
+      certConfigMap: ""
+    domain:
+      diskBus: virtio
+      volumeName: datavolumedisk100
+      resources:
+        requests:
+          memory: 16Gi
+  pfm:
+    nodes:
+      ocp-node02:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node02"
+    pvc:
+      resources:
+        requests:
+          storage: 380Gi
+      storageClassName: hostpath-provisioner
+    source:
+      url: "http://10.216.250.210:8008/packer-PFxM-8198-disk1.qcow2"
+      secretRef: ""
+      certConfigMap: ""
+    domain:
+      diskBus: virtio
+      volumeName: datavolumedisk100
+      resources:
+        requests:
+          memory: 32Gi

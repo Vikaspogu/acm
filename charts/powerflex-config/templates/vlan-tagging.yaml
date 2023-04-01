@@ -1,4 +1,5 @@
 {{- $bondName :=.Values.bond.name -}}
+{{- if .Values.interfaces }}
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
@@ -22,4 +23,5 @@ spec:
       vlan:
         base-iface: {{ $bondName }}
         id: {{ .id }}
-    {{- end }} 
+    {{- end }}
+{{- end }} 
