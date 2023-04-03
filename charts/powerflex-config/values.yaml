@@ -66,3 +66,11 @@ vms:
   #     resources:
   #       requests:
   #         memory: 32Gi
+
+hostpathProvisioner:
+  path: /var/data
+  ignitionVersion: 3.2.0
+  nodeSelector:
+    kubernetes.io/os: linux
+  labels:
+    machineconfiguration.openshift.io/role: worker

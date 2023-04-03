@@ -1,0 +1,17 @@
+---
+apiVersion: hostpathprovisioner.kubevirt.io/v1beta1
+kind: HostPathProvisioner
+metadata:
+  name: hostpath-provisioner
+  labels:
+    {{- include "powerflex-config.labels" . | nindent 4 }}
+spec:
+  imagePullPolicy: IfNotPresent
+  storagePools:
+    - name: data
+      path: {{ .Values.hostpathProvisioner.path }}
+  workload:
+    {{- with .Values.hostpathProvisioner.nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}

@@ -1,0 +1,29 @@
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 50-set-selinux-for-hostpath-provisioner
+  labels:
+    {{- include "powerflex-config.labels" . | nindent 4 }}
+    {{- with .Values.hostpathProvisioner.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  config:
+    ignition:
+      version: {{ .Values.hostpathProvisioner.ignitionVersion }}
+    systemd:
+      units:
+        - contents: |
+            [Unit]
+            Description=Set SELinux chcon for hostpath provisioner
+            Before=kubelet.service
+            [Service]
+                     Type=oneshot 
+                          RemainAfterExit=yes 
+            ExecStart=/usr/bin/chcon -Rt container_file_t {{ .Values.hostpathProvisioner.path }}
+            [Install]
+            WantedBy=multi-user.target
+          enabled: true
+          name: hostpath-provisioner.service
+
