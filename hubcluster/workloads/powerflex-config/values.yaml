@@ -110,9 +110,15 @@ vms:
       ocp-node02:
         nodeSelector: 
           kubernetes.io/hostname: "ocp-node02"
+        interfaces:
+          - 250
+          - 251
       ocp-node03:
         nodeSelector: 
           kubernetes.io/hostname: "ocp-node03"
+        interfaces:
+          - 139
+          - 204
     pvc:
       resources:
         requests:

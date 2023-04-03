@@ -47,12 +47,14 @@ spec:
               bus: {{ $vm.domain.diskBus }}
             name: {{ $vm.domain.volumeName }}
         ## TODO: Update network with template values
+        {{- if $node.interfaces }}
         networks:
-          - name: default
-            pod: {}
-          - name: br250
+        {{- range $interfaceId := $node.interfaces }}
+          - name: br{{ $interfaceId }}
             multus: 
-              networkName: nad-node01-250
+              networkName: nad-{{ $interfaceId }}
+        {{- end }}
+        {{- end }}
         machine:
           {{- with $vm.pvc.resources }}
           resources:
