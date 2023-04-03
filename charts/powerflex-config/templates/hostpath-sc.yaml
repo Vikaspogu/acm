@@ -10,4 +10,3 @@ reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   storagePool: data
-

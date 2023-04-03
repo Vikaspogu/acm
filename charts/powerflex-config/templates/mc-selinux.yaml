@@ -19,11 +19,10 @@ spec:
             Description=Set SELinux chcon for hostpath provisioner
             Before=kubelet.service
             [Service]
-                     Type=oneshot 
-                          RemainAfterExit=yes 
+            Type=oneshot 
+            RemainAfterExit=yes 
             ExecStart=/usr/bin/chcon -Rt container_file_t {{ .Values.hostpathProvisioner.path }}
             [Install]
             WantedBy=multi-user.target
           enabled: true
           name: hostpath-provisioner.service
-
