@@ -1,0 +1,38 @@
+---
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  identityProviders:
+    - name: login_provider
+      mappingMethod: claim
+      type: HTPasswd
+      htpasswd:
+        fileData:
+          name: htpass-secret-argo
+    - name: okta
+      mappingMethod: claim
+      type: OpenID
+      openID:
+        clientID: REPLACE
+        clientSecret:
+          name: openid-client-secret
+        claims:
+          email:
+            - email
+          name:
+            - name
+          preferredUsername:
+            - preferred_username
+          groups:
+            - groups
+        extraScopes:
+          - profile
+          - email
+          - groups
+        extraAuthorizeParameters:
+          include_granted_scopes: "true"
+        issuer: REPLACE

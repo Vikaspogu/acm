@@ -1,0 +1,12 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  - ./htpass-secret.yaml
+  - ./openid-secret.yaml
+  - ./oauth.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-options: Prune=false
