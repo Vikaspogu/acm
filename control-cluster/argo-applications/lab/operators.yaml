@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: hubcluster-operators-appset
+  name: lab-control-cluster-appset
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "-100"
@@ -15,10 +15,10 @@ spec:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: main
         directories:
-          - path: hubcluster/operators/*
+          - path: control-cluster/lab/*
   template:
     metadata:
-      name: 'hubcluster-{{path.basename}}'
+      name: 'control-cluster-{{path.basename}}'
     spec:
       destination:
         server: "https://kubernetes.default.svc"

@@ -7,9 +7,8 @@ metadata:
   name: dynatrace-operator
   namespace: dynatrace
 spec:
-  channel: alpha
+  channel: REPLACE
   installPlanApproval: Automatic
   name: dynatrace-operator
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: dynatrace-operator.v0.2.2
