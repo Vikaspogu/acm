@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: hubcluster-workloads-appset
+  name: hubcluster-operators-appset
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "-100"
@@ -13,9 +13,9 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/Vikaspogu/acm.git
-        revision: lab
+        revision: main
         directories:
-          - path: hubcluster/workloads/*
+          - path: hubcluster/operators/*
   template:
     metadata:
       name: 'hubcluster-{{path.basename}}'
@@ -34,4 +34,4 @@ spec:
       source:
         path: "{{path}}"
         repoURL: "https://github.com/Vikaspogu/acm.git"
-        targetRevision: "lab"
+        targetRevision: "main"

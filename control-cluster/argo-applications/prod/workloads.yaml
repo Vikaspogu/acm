@@ -5,7 +5,7 @@ metadata:
   name: hubcluster-workloads-appset
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "-100"
+    argocd.argoproj.io/sync-wave: "10"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   finalizers:
     - resources-finalizer.argocd.argoproj.io
