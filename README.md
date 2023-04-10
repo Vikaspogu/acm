@@ -9,12 +9,11 @@ Pre-requisites:
 Install OpenShift-GitOps operator(ArgoCD)
 
 ```bash
-oc apply -f bootstrap/openshift-gitops/operator/subscription.yaml
+oc apply -f bootstrap/openshift-gitops/subscription.yaml
 ```
 
 Update Argo instance to enable helm plugin, ability to refer from root directory and custom health checks
 
 ```bash
-oc apply -f bootstrap/openshift-gitops/instance/argocd.yaml
+oc apply -f bootstrap/openshift-gitops/argocd.yaml
 ```
-
