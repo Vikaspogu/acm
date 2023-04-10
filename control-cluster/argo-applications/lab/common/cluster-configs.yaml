@@ -2,10 +2,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: control-cluster-workloads-appset
+  name: common-cluster-configs-control-cluster-appset
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "10"
+    argocd.argoproj.io/sync-wave: "-100"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -15,10 +15,10 @@ spec:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: main
         directories:
-          - path: control-cluster/lab/workloads/*
+          - path: control-cluster/lab/common/cluster-configs/*
   template:
     metadata:
-      name: 'control-cluster-{{path.basename}}'
+      name: 'lab-common-control-cluster-{{path.basename}}'
     spec:
       destination:
         server: "https://kubernetes.default.svc"
