@@ -12,6 +12,9 @@ patches:
         path: /spec/provider/server
         value: "https://vault.com"
       - op: replace
+        path: /spec/provider/vault/server
+        value: "https://vault.com"
+      - op: replace
         path: /spec/provider/vault/auth/tokenSecretRef/name
         value: "vault-token"
       - op: replace

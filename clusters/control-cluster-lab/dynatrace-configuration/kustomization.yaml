@@ -16,7 +16,7 @@ patches:
         path: /spec/secretStoreRef/name
         value: "vault-clusterstore"
   - target:
-      kind: Dynakube
+      kind: DynaKube
     patch: |-
       - op: replace
         path: /spec/apiUrl
