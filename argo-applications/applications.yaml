@@ -11,33 +11,42 @@ spec:
     - git:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: "main"
-        files:
-          - path: kustomize/${cluster}/**/config.json
         directories:
-          - path: kustomize/${cluster}/*
+          - path: kustomize/cluster-overlays/${cluster}/*
+    - git:
+        repoURL: https://github.com/Vikaspogu/acm.git
+        revision: "main"
+        directories:
+          - path: helm/cluster-overlays/${cluster}/*
+        metadata:
+          template:
+            spec:
+              source:
+                path: helm/charts/{{.path.basename}}
+                helm:
+                  valueFiles:
+                  - ../../cluster-overlays/${cluster}/{{.path.basename}}/values.yaml
   strategy:
     type: RollingSync
     rollingSync:
       steps:
         - matchExpressions:
-            - key: type
+            - key: application-type
               operator: In
               values:
-                - operators
+                - operator
         - matchExpressions:
-            - key: type
-              operator: In
-              values:
-                - operand
-        - matchExpressions:
-            - key: type
+            - key: application-type
               operator: In
               values:
                 - configuration
+        - matchExpressions: []
   goTemplate: true
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '{{ .path.basename }}'
+      labels:
+        application-type: '{{ .path.basename | splitList "-" | last }}'
     spec:
       destination:
         server: "https://kubernetes.default.svc"
