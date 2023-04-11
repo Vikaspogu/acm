@@ -18,7 +18,28 @@ spec:
               repoURL: https://github.com/Vikaspogu/acm.git
               revision: "main"
               directories:
-                - path: clusters/common/*
+                - path: kustomize/cluster-bootstrap/*
+              files:
+                - path: kustomize/cluster-bootstrap/**/config.json
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: type
+              operator: In
+              values:
+                - operators
+        - matchExpressions:
+            - key: type
+              operator: In
+              values:
+                - operand
+        - matchExpressions:
+            - key: type
+              operator: In
+              values:
+                - configuration
   template:
     metadata:
       name: '{{name}}-{{path.basename}}'

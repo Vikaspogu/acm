@@ -123,6 +123,8 @@ spec:
           memory: 128Mi
     provider: dex
   applicationSet:
+    extraCommandArgs:
+      - --enable-progressive-syncs
     resources:
       limits:
         cpu: '2'
