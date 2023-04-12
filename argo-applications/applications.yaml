@@ -44,6 +44,12 @@ spec:
               operator: In
               values:
                 - configuration
+        - matchExpressions:
+            - key: application-type
+              operator: NotIn
+              values:
+                - operator
+                - configuration
   goTemplate: true
   template:
     metadata:
@@ -62,6 +68,11 @@ spec:
             duration: "120s"
             factor: 5
             maxDuration: "10m0s"
+        syncOptions:
+          - SkipDryRunOnMissingResource=true
+          - Validate=false
+          - ApplyOutOfSyncOnly=true
+          - RespectIgnoreDifferences=true
       source:
         path: "{{.path.path}}"
         repoURL: "https://github.com/Vikaspogu/acm.git"
