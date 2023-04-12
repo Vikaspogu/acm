@@ -1,0 +1,41 @@
+# Reference: https://docs.openshift.com/container-platform/4.11/logging/cluster-logging-external.html#cluster-logging-collector-log-forward-project_cluster-logging-external
+# Example app log forwarder
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance 
+  namespace: openshift-logging 
+spec:
+  outputs:
+   - name: fluentd-server-secure 
+     type: fluentdForward 
+     url: 'tls://fluentdserver.security.example.com:24224' 
+     secret: 
+        name: fluentd-secret
+   - name: fluentd-server-insecure
+     type: fluentdForward
+     url: 'tcp://fluentdserver.home.example.com:24224'
+  inputs: 
+   - name: my-app-logs
+     application:
+        namespaces:
+        - my-project
+  pipelines:
+   - name: forward-to-fluentd-insecure 
+     inputRefs: 
+     - my-app-logs
+     outputRefs: 
+     - fluentd-server-insecure
+     parse: json 
+     labels:
+       project: "my-project" 
+   - name: forward-to-fluentd-secure 
+     inputRefs:
+     - application
+     - audit
+     - infrastructure
+     outputRefs:
+     - fluentd-server-secure
+     - default
+     labels:
+       clusterId: "C1234"
