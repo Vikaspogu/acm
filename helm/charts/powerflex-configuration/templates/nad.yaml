@@ -1,4 +1,4 @@
-{{- $releaseLabels := include "powerflex-config.labels" . -}}
+{{- $releaseLabels := include "powerflex-configuration.labels" . -}}
 {{- range .Values.interfaces }}
 ---
 apiVersion: "k8s.cni.cncf.io/v1"

@@ -1,6 +1,3 @@
-# Default values for powerflex-config charts
-
-# NMState bond values
 
 bond:
   name: bond1
@@ -12,8 +9,6 @@ bond:
       - eno3
       - eno4
 
-## NMState Interfaces for VLAN Tagging
-
 interfaces:
   - id: 250
     mtu: 1500
@@ -21,24 +16,27 @@ interfaces:
       type: vlan
       state: up
   - id: 251
+    mtu: 9000
+    vlan:
+      type: vlan
+      state: up
+  - id: 252
+    mtu: 9000
+    vlan:
+      type: vlan
+      state: up
+  - id: 139
     mtu: 1500
     vlan:
       type: vlan
       state: up
-  - id: 253
+  - id: 204
     mtu: 1500
     vlan:
       type: vlan
       state: up
-  - id: 254
-    mtu: 1500
-    vlan:
-      type: vlan
-      state: up
-
-## NMState Bridges and IP address for Nodes
-
-nodesBridge: 
+      
+nodesBridge:
   ocp-node01:
     nodeSelector: 
       kubernetes.io/hostname: "ocp-node01"
@@ -49,13 +47,16 @@ nodesBridge:
         - ip: 10.216.250.206
           prefix-length: 24
       251:
-        - ip: 10.216.251.206
+        - ip: 10.216.251.208
           prefix-length: 24
       252:
         - ip: 10.216.252.206
           prefix-length: 24
-      253:
-        - ip: 10.216.253.206
+      139:
+        - ip: 192.168.139.206
+          prefix-length: 24
+      204: 
+        - ip: 10.216.204.206
           prefix-length: 24
   ocp-node02:
     nodeSelector: 
@@ -64,50 +65,46 @@ nodesBridge:
     state: up
     interfaceIDs:
       250:
+        - ip: 10.216.250.207
+          prefix-length: 24
+      251:
+        - ip: 10.216.251.182
+          prefix-length: 24
+      252:
+        - ip: 10.216.252.182
+          prefix-length: 24
+      139:
+        - ip: 192.168.139.241
+          prefix-length: 24
+      204: 
+        - ip: 10.216.204.16
+          prefix-length: 24
+  ocp-node03:
+    nodeSelector: 
+      kubernetes.io/hostname: "ocp-node03"
+    type: linux-bridge
+    state: up
+    interfaceIDs:
+      250:
         - ip: 10.216.250.208
           prefix-length: 24
       251:
-        - ip: 10.216.251.208
+        - ip: 10.216.251.183
           prefix-length: 24
       252:
-        - ip: 10.216.252.208
+        - ip: 10.216.252.183
           prefix-length: 24
-      253:
-        - ip: 10.216.253.208
+      139:
+        - ip: 192.168.139.242
           prefix-length: 24
-
-
-## Node selector to spread across nodes
+      204: 
+        - ip: 10.216.204.17
+          prefix-length: 24
 
 nodeSelector: 
   node-role.kubernetes.io/worker: "true"
 
-# Ovirt VMs config for network, storage values
-
 vms:
-  gw:
-    nodes:
-      ocp-node01:
-        nodeSelector: 
-          kubernetes.io/hostname: "ocp-node01"
-        interfaces:
-          - 250
-          - 251
-    pvc:
-      resources:
-        requests:
-          storage: 300Gi
-      storageClassName: hostpath-provisioner
-    source:
-      url: "http://10.216.250.210:8008/gw-7.1-3.6.1.3.qcow2"
-      secretRef: ""
-      certConfigMap: ""
-    domain:
-      diskBus: virtio
-      volumeName: datavolumedisk100
-      resources:
-        requests:
-          memory: 64Gi
   clc:
     nodes:
       ocp-node02:
@@ -137,11 +134,46 @@ vms:
       resources:
         requests:
           memory: 32Gi
-
-hostpathProvisioner:
-  path: /var/data
-  ignitionVersion: 3.2.0
-  nodeSelector:
-    kubernetes.io/os: linux
-  labels:
-    machineconfiguration.openshift.io/role: worker
+  gw:
+    nodes:
+      ocp-node02:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node02"
+      ocp-node03:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node03"
+    pvc:
+      resources:
+        requests:
+          storage: 160Gi
+      storageClassName: hostpath-provisioner
+    source:
+      url: "http://10.216.250.210:8008/PxPS-3604.qcow2"
+      secretRef: ""
+      certConfigMap: ""
+    domain:
+      diskBus: virtio
+      volumeName: datavolumedisk100
+      resources:
+        requests:
+          memory: 16Gi
+  pfm:
+    nodes:
+      ocp-node02:
+        nodeSelector: 
+          kubernetes.io/hostname: "ocp-node02"
+    pvc:
+      resources:
+        requests:
+          storage: 380Gi
+      storageClassName: hostpath-provisioner
+    source:
+      url: "http://10.216.250.210:8008/packer-PFxM-8198-disk1.qcow2"
+      secretRef: ""
+      certConfigMap: ""
+    domain:
+      diskBus: virtio
+      volumeName: datavolumedisk100
+      resources:
+        requests:
+          memory: 32Gi

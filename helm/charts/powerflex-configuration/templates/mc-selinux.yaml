@@ -4,7 +4,7 @@ kind: MachineConfig
 metadata:
   name: 50-set-selinux-for-hostpath-provisioner
   labels:
-    {{- include "powerflex-config.labels" . | nindent 4 }}
+    {{- include "powerflex-configuration.labels" . | nindent 4 }}
     {{- with .Values.hostpathProvisioner.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

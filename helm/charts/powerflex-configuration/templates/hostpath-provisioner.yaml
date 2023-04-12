@@ -4,7 +4,7 @@ kind: HostPathProvisioner
 metadata:
   name: hostpath-provisioner
   labels:
-    {{- include "powerflex-config.labels" . | nindent 4 }}
+    {{- include "powerflex-configuration.labels" . | nindent 4 }}
 spec:
   imagePullPolicy: IfNotPresent
   storagePools:

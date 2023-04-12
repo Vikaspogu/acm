@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "powerflex-config.name" -}}
+{{- define "powerflex-configuration.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "powerflex-config.fullname" -}}
+{{- define "powerflex-configuration.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "powerflex-config.chart" -}}
+{{- define "powerflex-configuration.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "powerflex-config.labels" -}}
-helm.sh/chart: {{ include "powerflex-config.chart" . }}
-{{ include "powerflex-config.selectorLabels" . }}
+{{- define "powerflex-configuration.labels" -}}
+helm.sh/chart: {{ include "powerflex-configuration.chart" . }}
+{{ include "powerflex-configuration.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "powerflex-config.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "powerflex-config.name" . }}
+{{- define "powerflex-configuration.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "powerflex-configuration.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "powerflex-config.serviceAccountName" -}}
+{{- define "powerflex-configuration.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "powerflex-config.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "powerflex-configuration.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

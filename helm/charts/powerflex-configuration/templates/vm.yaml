@@ -1,6 +1,6 @@
 {{- $values := .Values -}}
-{{- $releaseName := include "powerflex-config.fullname" . -}}
-{{- $releaseLabels := include "powerflex-config.labels" . -}}
+{{- $releaseName := include "powerflex-configuration.fullname" . -}}
+{{- $releaseLabels := include "powerflex-configuration.labels" . -}}
 {{- range $key, $vm := $values.vms }}
 {{- range $nodeKey, $node := $vm.nodes }}
 ---

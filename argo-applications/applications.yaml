@@ -12,20 +12,32 @@ spec:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: "main"
         directories:
-          - path: kustomize/cluster-overlays/${cluster}/*
+          - path: kustomize/cluster-overlays/control-cluster-lab/*
     - git:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: "main"
         directories:
-          - path: helm/cluster-overlays/${cluster}/*
-        metadata:
-          template:
-            spec:
-              source:
-                path: helm/charts/{{.path.basename}}
-                helm:
-                  valueFiles:
-                  - ../../cluster-overlays/${cluster}/{{.path.basename}}/values.yaml
+          - path: helm/cluster-overlays/control-cluster-lab/*
+        template:
+          metadata: {}
+          spec:
+            project: "default"
+            syncPolicy:
+              automated: {}
+              retry:
+                limit: 10
+                backoff:
+                  duration: "120s"
+                  factor: 5
+                  maxDuration: "10m0s"
+            source:
+              repoURL: https://github.com/Vikaspogu/acm.git
+              path: helm/charts/{{.path.basename}}
+              helm:
+                valueFiles:
+                  - ../../cluster-overlays/control-cluster-lab/{{.path.basename}}/values.yaml
+            destination:
+              server: "https://kubernetes.default.svc"
   strategy:
     type: RollingSync
     rollingSync:
@@ -52,8 +64,7 @@ spec:
         server: "https://kubernetes.default.svc"
       project: default
       syncPolicy:
-        automated:
-          selfHeal: true
+        automated: {}
         retry:
           limit: 10
           backoff:

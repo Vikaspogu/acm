@@ -1,6 +1,6 @@
 {{- $values := .Values -}}
 {{- $bondName := .Values.bond.name -}}
-{{- $releaseLabels := include "powerflex-config.labels" . -}}
+{{- $releaseLabels := include "powerflex-configuration.labels" . -}}
 {{- range $index, $node := $values.nodesBridge  }}
 ---
 apiVersion: nmstate.io/v1
