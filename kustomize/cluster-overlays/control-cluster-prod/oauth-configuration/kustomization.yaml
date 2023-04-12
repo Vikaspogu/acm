@@ -1,0 +1,41 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../bases/oauth-configuration
+
+commonAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous
+  argocd.argoproj.io/sync-options: Prune=false
+
+patches:
+  - target:
+      kind: ExternalSecret
+      name: htpass-secret
+    patch: |-
+      - op: replace
+        path: /spec/data/0/remoteRef/key
+        value: "secret/lab-htpass-secret"
+      - op: replace
+        path: /spec/secretStoreRef/name
+        value: "vault-backend"
+  - target:
+      kind: ExternalSecret
+      name: openid-client-secret
+    patch: |-
+      - op: replace
+        path: /spec/data/0/remoteRef/key
+        value: "secret/lab-openid-client-secret-okta"
+      - op: replace
+        path: /spec/secretStoreRef/name
+        value: "vault-backend"
+  - target:
+      kind: OAuth
+    patch: |-
+      - op: replace
+        path: /spec/identityProviders/1/openID/issuer
+        value: "https://okta.com"
+      - op: replace
+        path: /spec/identityProviders/1/openID/clientID
+        value: "124356"
+
