@@ -52,7 +52,8 @@ spec:
         server: "https://kubernetes.default.svc"
       project: default
       syncPolicy:
-        automated: {}
+        automated:
+          selfHeal: true
         retry:
           limit: 10
           backoff:
@@ -60,6 +61,6 @@ spec:
             factor: 5
             maxDuration: "10m0s"
       source:
-        path: "{{path}}"
+        path: "{{.path.path}}"
         repoURL: "https://github.com/Vikaspogu/acm.git"
 
