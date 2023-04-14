@@ -1,0 +1,31 @@
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: shared-app-trigger
+spec:
+  serviceAccountName: pipeline
+  interceptors:
+    - ref:
+        name: "cel"
+      params:
+        - name: "overlays"
+          value:
+            - key: git-url
+              expression: "body.helmChart.repoUrl"
+            - key: git-revision
+              expression: "body.helmChart.revision"
+            - key: charts_dir
+              expression: "body.helmChart.dir"
+            - key: release_version
+              expression: "body.helmChart.version"
+            - key: release_name
+              expression: "body.release.name"
+            - key: release_namespace
+              expression: "body.release.namespace"
+            - key: overwrite_values
+              expression: "body.release.values"
+  bindings:
+    - ref: shared-app-trigger-binding
+  template:
+    ref: shared-app-trigger-template

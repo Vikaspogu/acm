@@ -1,0 +1,46 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: shared-app-trigger-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: charts_dir
+    - name: release_version
+    - name: release_name
+    - name: release_namespace
+    - name: overwrite_values
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: deploy-$(tt.params.release_name)-
+      spec:
+        serviceAccountName: pipeline
+        pipelineRef:
+          name: shared-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: charts_dir
+            value: $(tt.params.charts_dir)
+          - name: release_version
+            value: $(tt.params.release_version)
+          - name: release_name
+            value: $(tt.params.release_name)
+          - name: release_namespace
+            value: $(tt.params.release_namespace)
+          - name: overwrite_values
+            value: $(tt.params.overwrite_values)
+        workspaces:
+          - name: shared-workspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 500Mi

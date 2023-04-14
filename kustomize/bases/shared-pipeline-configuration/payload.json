@@ -1,0 +1,13 @@
+{
+    "helmChart": {
+        "repoUrl": "https://github.com/Vikaspogu/helm-charts.git",
+        "dir": "charts/common",
+        "revision": "master",
+        "version": ""
+    },
+    "release": {
+        "name": "test-app",
+        "namespace": "test-ns",
+        "values": "image.repository=vikaspogu/node-ci-test,image.tag=0.0.1"
+    }
+}

@@ -1,0 +1,9 @@
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: shared-app-event-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - triggerRef: shared-app-trigger
