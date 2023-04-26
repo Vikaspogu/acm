@@ -61,4 +61,4 @@ spec:
         helm:
           parameters:
             - name: clusterName
-              value: "{{.server}}"
+              value: "{{.name}}"

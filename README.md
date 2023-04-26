@@ -17,3 +17,15 @@ Update Argo instance to enable helm plugin, ability to refer from root directory
 ```bash
 oc apply -k kustomize/cluster-bootstrap/openshift-gitops-configuration
 ```
+
+Create Argo application-set using helm install
+
+```bash
+helm upgrade --install argo-application helm/charts/argo-application --set clusterName=control-cluster-prod
+```
+
+Verify clusters in placement rule
+
+```bash
+oc get placement -n openshift-gitops
+```
