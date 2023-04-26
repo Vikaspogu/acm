@@ -4,30 +4,30 @@ kind: ApplicationSet
 metadata:
   name: clusters-appset
   namespace: openshift-gitops
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  labels:
+    {{- include "argo-application.labels" . | nindent 4 }}
 spec:
   generators:
     - git:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: "main"
         directories:
-          - path: kustomize/cluster-overlays/${cluster}/*
+          - path: kustomize/cluster-overlays/{{ .Values.clusterName }}/*
     - git:
         repoURL: https://github.com/Vikaspogu/acm.git
         revision: "main"
         directories:
-          - path: helm/cluster-overlays/${cluster}/*
+          - path: helm/cluster-overlays/{{ .Values.clusterName }}/*
         template:
           metadata: {}
           spec:
             project: "default"
             source:
               repoURL: https://github.com/Vikaspogu/acm.git
-              path: helm/charts/{{.path.basename}}
+              path: helm/charts/{{`{{.path.basename}}`}}
               helm:
                 valueFiles:
-                  - ../../cluster-overlays/${cluster}/{{.path.basename}}/values.yaml
+                  - ../../cluster-overlays/{{ .Values.clusterName }}/{{`{{.path.basename}}`}}/values.yaml
             destination:
               server: "https://kubernetes.default.svc"
   strategy:
@@ -53,9 +53,9 @@ spec:
   goTemplate: true
   template:
     metadata:
-      name: '{{ .path.basename }}'
+      name: '{{`{{.path.basename}}`}}'
       labels:
-        application-type: '{{ .path.basename | splitList "-" | last }}'
+        application-type: '{{`{{ .path.basename | splitList "-" | last }}`}}'
     spec:
       destination:
         server: "https://kubernetes.default.svc"
@@ -76,3 +76,4 @@ spec:
       source:
         path: "{{.path.path}}"
         repoURL: "https://github.com/Vikaspogu/acm.git"
+        targetRevision: main

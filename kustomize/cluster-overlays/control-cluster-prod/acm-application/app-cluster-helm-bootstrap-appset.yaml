@@ -1,0 +1,64 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: app-cluster-helm-bootstrap-appset
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: default-clusterset
+        requeueAfterSeconds: 3600
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: application-type
+              operator: In
+              values:
+                - operator
+        - matchExpressions:
+            - key: application-type
+              operator: In
+              values:
+                - configuration
+        - matchExpressions:
+            - key: application-type
+              operator: In
+              values:
+                - application
+  goTemplate: true
+  template:
+    metadata:
+      name: 'bootstrap-{{.name}}'
+      labels:
+        application-type: 'application'
+    spec:
+      destination:
+        server: "{{.server}}"
+      project: default
+      syncPolicy:
+        automated: {}
+        retry:
+          limit: 10
+          backoff:
+            duration: "120s"
+            factor: 5
+            maxDuration: "10m0s"
+        syncOptions:
+          - SkipDryRunOnMissingResource=true
+          - Validate=false
+          - ApplyOutOfSyncOnly=true
+          - RespectIgnoreDifferences=true
+      source:
+        path: "helm/charts/argo-application"
+        repoURL: "https://github.com/Vikaspogu/acm.git"
+        targetRevision: "main"
+        helm:
+          parameters:
+            - name: clusterName
+              value: "{{.server}}"
