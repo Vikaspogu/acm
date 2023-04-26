@@ -1,0 +1,24 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: openshift-wildcard-certificate
+  namespace: openshift-ingress
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: REPLACE
+  target:
+    name: openshift-wildcard-certificate
+    creationPolicy: Owner
+    template:
+      data:
+        tls.crt: '{{ .certKey | filterPEM "CERTIFICATE" }}'
+        tls.key: '{{ .certKey | filterPEM "PRIVATE KEY" }}'
+      engineVersion: v2
+      type: kubernetes.io/tls
+  data:
+    - secretKey: certKey
+      remoteRef:
+        key: REPLACE
