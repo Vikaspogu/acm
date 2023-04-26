@@ -74,6 +74,6 @@ spec:
           - ApplyOutOfSyncOnly=true
           - RespectIgnoreDifferences=true
       source:
-        path: "{{.path.path}}"
+        path: "{{`{{.path.path}}`}}"
         repoURL: "https://github.com/Vikaspogu/acm.git"
         targetRevision: main
