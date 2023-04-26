@@ -34,7 +34,7 @@ spec:
   goTemplate: true
   template:
     metadata:
-      name: 'bootstrap-{{.name}}'
+      name: 'bootstrap-{{.name}}-helm-appset'
       labels:
         application-type: 'application'
     spec:
